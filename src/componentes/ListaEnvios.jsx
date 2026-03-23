@@ -15,7 +15,7 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
             value={terminoBusqueda} onChange={(e) => alCambiarBusqueda(e.target.value)}
           />
         </div>
-        {rol === 'Operador' && (
+        {rol === 'Operador' || rol === 'Supervisor' && (
           <button onClick={alIrNuevo} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
             <PlusCircle className="w-4 h-4" /> Nuevo Envío
           </button>

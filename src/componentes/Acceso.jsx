@@ -24,7 +24,7 @@ const Acceso = ({ alIngresar }) => (
           <button onClick={() => alIngresar('Supervisor')} className="w-full flex items-center justify-between p-4 rounded-2xl border-2 border-gray-50 hover:border-purple-500 hover:bg-purple-50 transition-all group">
             <div className="flex items-center gap-4">
               <div className="bg-purple-100 p-3 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-colors"><Shield /></div>
-              <div className="text-left"><p className="font-bold text-gray-800">Supervisor</p><p className="text-xs text-gray-500">Gestión de estados y auditoría</p></div>
+              <div className="text-left"><p className="font-bold text-gray-800">Supervisor</p><p className="text-xs text-gray-500">Alta, gestión de estados y auditoría</p></div>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-300" />
           </button>
