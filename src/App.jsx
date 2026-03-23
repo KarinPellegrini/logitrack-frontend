@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { AlertCircle } from 'lucide-react';
 
-// IMPORTACIONES DE TUS COMPONENTES
+// IMPORTACIONES SEGÚN TU ESTRUCTURA DE CARPETAS
 import Acceso from './componentes/Acceso';
 import BarraNavegacion from './componentes/BarraNavegacion';
 import ListaEnvios from './componentes/ListaEnvios';
@@ -24,7 +24,8 @@ export default function App() {
       estado: 'Registrado', 
       prioridad: 'Media',
       cargaPeso: '2.5',
-      cargaTipo: 'Estándar'
+      cargaTipo: 'Estándar',
+      fechaCreacion: new Date().toISOString()
     }
   ]);
 
@@ -37,34 +38,38 @@ export default function App() {
 
   const mostrarNotificacion = (msj) => {
     setNotificacion(msj);
-    setTimeout(() => setNotificacion(null), 3000);
+    setTimeout(() => setNotificacion(null), 4000);
   };
 
   const cerrarTodo = () => {
     setEnvioSeleccionado(null);
     setVista('listado');
+    setTerminoBusqueda('');
   };
 
+  // Lógica de acceso condicional
   if (!usuario) {
     return (
-      <Acceso alIngresar={(rol) => {
-        setUsuario({ nombre: rol === 'Operador' ? 'Melina Scabini' : 'Ciro López', rol });
-        mostrarNotificacion(`Bienvenido: Acceso como ${rol}`);
+      <Acceso alIngresar={(userObj) => {
+        setUsuario(userObj);
+        mostrarNotificacion(`Bienvenido: ${userObj.nombre}`);
       }} />
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#F8FAFC] font-sans text-gray-900">
       <BarraNavegacion 
         usuario={usuario} 
-        alCerrarSesion={() => setUsuario(null)} 
+        alCerrarSesion={() => {
+            setUsuario(null);
+            setVista('listado');
+        }} 
         alIrInicio={cerrarTodo} 
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        
-        {vista === 'listado' && !envioSeleccionado && (
+        {vista === 'listado' && (
           <ListaEnvios 
             envios={enviosFiltrados} 
             rol={usuario.rol} 
@@ -79,7 +84,6 @@ export default function App() {
           <FormularioEnvio 
             alVolver={cerrarTodo} 
             alGuardar={(nuevo) => {
-              // Lógica de IA sincronizada con los campos del Formulario
               const esPesado = parseFloat(nuevo.cargaPeso) > 10;
               const esEspecial = ['Peligrosa', 'Médica', 'Frágil'].includes(nuevo.cargaTipo);
               
@@ -101,12 +105,11 @@ export default function App() {
             alVolver={cerrarTodo} 
           />
         )}
-
       </main>
 
       {notificacion && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce">
-          <AlertCircle className="text-blue-400" />
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+          <AlertCircle className="text-blue-400 w-5 h-5" />
           <p className="text-sm font-bold">{notificacion}</p>
         </div>
       )}
