@@ -7,7 +7,7 @@ import BarraNavegacion from './componentes/BarraNavegacion';
 import ListaEnvios from './componentes/ListaEnvios';
 import DetalleEnvio from './componentes/DetalleEnvio';
 import FormularioEnvio from './componentes/FormularioEnvio';
-import ModalARCO from './componentes/ModalArco';
+import ModalARCO from './componentes/ModalARCO';
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
