@@ -1,3 +1,4 @@
+# Visión, Elevator Pitch y Stakeholders
 ## 1. Visión del Producto
 
 ### Oportunidad / Problema
