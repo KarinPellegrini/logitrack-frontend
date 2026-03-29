@@ -1,12 +1,5 @@
 # Definition of Ready / Definition of Done — LogiTrack
 
-**Proyecto:** LogiTrack — Paquete Base de Gestión de Envíos (MVP)  
-**Materia:** Proyecto Profesional I / Laboratorio de Construcción de Software  
-**Grupo:** 06 — Comisión 01  
-**Integrantes:** Scabini Melina Noelia · López Ciro Martín · Pellegrini Farnholc Karin Daniela  
-
----
-
 ## Definition of Ready (DoR)
 
 Un ítem del backlog se considera **Ready** (Listo) para ser incluido en un Sprint cuando el equipo confirma que es accionable y cumple con los siguientes requisitos:

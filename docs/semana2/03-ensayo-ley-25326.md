@@ -1,12 +1,5 @@
 # Ensayo — Cumplimiento de la Ley 25.326 — LogiTrack
 
-**Proyecto:** LogiTrack — Paquete Base de Gestión de Envíos (MVP)  
-**Materia:** Proyecto Profesional I / Laboratorio de Construcción de Software  
-**Grupo:** 06 — Comisión 01  
-**Integrantes:** Scabini Melina Noelia · López Ciro Martín · Pellegrini Farnholc Karin Daniela  
-
----
-
 ## I. Introducción
 
 La Ley 25.326, sancionada el 4 de octubre de 2000, tiene por objeto la protección integral de los datos personales asentados en archivos, registros, bancos de datos u otros medios técnicos de tratamiento de datos, sean éstos públicos o privados destinados a dar informes, para garantizar el derecho al honor y a la intimidad de las personas (art. 1°). Reglamentaria del artículo 43 de la Constitución Nacional, la norma se estructura sobre los siguientes ejes fundamentales: la definición del dato personal, la base de licitud del tratamiento, el plazo de retención y los derechos ARCO de los titulares.

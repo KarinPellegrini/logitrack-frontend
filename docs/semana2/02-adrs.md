@@ -1,12 +1,5 @@
 # ADRs — Architecture Decision Records — LogiTrack
 
-**Proyecto:** LogiTrack — Paquete Base de Gestión de Envíos (MVP)  
-**Materia:** Proyecto Profesional I / Laboratorio de Construcción de Software  
-**Grupo:** 06 — Comisión 01  
-**Integrantes:** Scabini Melina Noelia · López Ciro Martín · Pellegrini Farnholc Karin Daniela  
-
----
-
 ## ADR 1 — Arquitectura basada en API REST
 
 **Contexto**  

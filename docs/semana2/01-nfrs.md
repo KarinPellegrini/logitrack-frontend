@@ -1,12 +1,5 @@
 # NFRs — Requerimientos No Funcionales — LogiTrack
 
-**Proyecto:** LogiTrack — Paquete Base de Gestión de Envíos (MVP)  
-**Materia:** Proyecto Profesional I / Laboratorio de Construcción de Software  
-**Grupo:** 06 — Comisión 01  
-**Integrantes:** Scabini Melina Noelia · López Ciro Martín · Pellegrini Farnholc Karin Daniela  
-
----
-
 ## NFR1 — Usabilidad
 
 El sistema debe ser intuitivo y permitir que un operador registre un envío en menos de 1 minuto sin capacitación técnica.

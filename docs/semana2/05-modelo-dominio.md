@@ -1,12 +1,5 @@
 # Modelo de Dominio y Diagrama de Estados — LogiTrack
 
-**Proyecto:** LogiTrack — Paquete Base de Gestión de Envíos (MVP)  
-**Materia:** Proyecto Profesional I / Laboratorio de Construcción de Software  
-**Grupo:** 06 — Comisión 01  
-**Integrantes:** Scabini Melina Noelia · López Ciro Martín · Pellegrini Farnholc Karin Daniela  
-
----
-
 ## Modelo de Dominio
 
 El modelo de dominio define las entidades principales del sistema y sus relaciones.
