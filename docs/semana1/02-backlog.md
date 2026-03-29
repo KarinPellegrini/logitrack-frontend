@@ -1,12 +1,5 @@
 # Backlog Inicial — LogiTrack
 
-**Proyecto:** LogiTrack — Paquete Base de Gestión de Envíos (MVP)  
-**Materia:** Proyecto Profesional I / Laboratorio de Construcción de Software  
-**Grupo:** 06 — Comisión 01  
-**Integrantes:** Scabini Melina Noelia · López Ciro Martín · Pellegrini Farnholc Karin Daniela  
-
----
-
 ## Priorización MoSCoW
 
 | ID | Categoría | Requerimiento / Ítem de Backlog | Tipo | Prioridad |
