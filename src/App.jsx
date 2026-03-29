@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertCircle, ShieldCheck } from 'lucide-react';
 import axios from 'axios';
 
@@ -22,7 +22,7 @@ export default function App() {
   const [modalARCOAbierto, setModalARCOAbierto] = useState(false);
   const [envios, setEnvios] = useState([]);
 
-  // --- 1. NOTIFICACIÓN (Definida primero para evitar errores de acceso) ---
+  // --- 1. NOTIFICACIÓN ---
   const mostrarNotificacion = (msj) => {
     setNotificacion(msj);
     setTimeout(() => setNotificacion(null), 4000);
@@ -31,7 +31,10 @@ export default function App() {
   // --- 2. LÓGICA DE PERSISTENCIA (POST) ---
   const guardarNuevoEnvio = async (datos) => {
     try {
+      // Enviamos el objeto completo (incluyendo cpOrigen para la IA)
       const response = await axios.post(API_URL, datos);
+      
+      // Actualizamos la lista con el nuevo envío que ya trae la prioridad de la IA
       setEnvios([response.data, ...envios]);
       setVista('listado');
       mostrarNotificacion(`¡Envío Registrado! ID: ${response.data.trackingId}`);
@@ -41,12 +44,16 @@ export default function App() {
     }
   };
 
-  // --- 3. SINCRONIZACIÓN CON BACKEND (GET) ---
+  // --- 3. SINCRONIZACIÓN CON BACKEND Y BÚSQUEDA DE CIRO ---
   useEffect(() => {
     const ejecutarCarga = async () => {
       try {
-        const response = await axios.get(API_URL);
-        // Cargamos los datos semilla (Karin, Ciro, Melina)
+        // MODIFICACIÓN: Si hay texto en la lupa, usamos el endpoint de búsqueda del backend
+        const url = terminoBusqueda.trim() 
+          ? `${API_URL}/buscar?nombre=${terminoBusqueda}` 
+          : API_URL;
+          
+        const response = await axios.get(url);
         setEnvios(response.data); 
       } catch (error) {
         mostrarNotificacion("Error de conexión con el servidor");
@@ -57,15 +64,7 @@ export default function App() {
     if (usuario) {
       ejecutarCarga();
     }
-  }, [usuario]); // Solo se dispara al loguearse o refrescar
-
-  // --- 4. FILTRADO Y NAVEGACIÓN ---
-  const enviosFiltrados = useMemo(() => {
-    return envios.filter(e => 
-      e.trackingId.toLowerCase().includes(terminoBusqueda.toLowerCase()) || 
-      e.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase())
-    );
-  }, [envios, terminoBusqueda]);
+  }, [usuario, terminoBusqueda]); // Se dispara cada vez que escribís en el buscador
 
   const cerrarTodo = () => {
     setEnvioSeleccionado(null);
@@ -84,7 +83,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full pb-20">
         {vista === 'listado' && (
           <ListaEnvios 
-            envios={enviosFiltrados} 
+            envios={envios} // Ahora pasamos 'envios' directamente porque el filtrado viene del backend
             rol={usuario.rol} 
             terminoBusqueda={terminoBusqueda} 
             alCambiarBusqueda={setTerminoBusqueda} 
@@ -102,6 +101,7 @@ export default function App() {
         )}
       </main>
 
+      {/* FOOTER Y MODALES */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t px-6 py-3 text-[10px] flex justify-between items-center z-40">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
@@ -115,9 +115,6 @@ export default function App() {
             <ShieldCheck size={12} className="text-blue-500" /> Derechos ARCO (Ley 25.326)
           </button>
         </div>
-        <p className="hidden md:block font-bold text-blue-600 uppercase tracking-tighter">
-          Management Module — v1.0.0
-        </p>
       </footer>
 
       <ModalARCO abierto={modalARCOAbierto} alCerrar={() => setModalARCOAbierto(false)} />
