@@ -29,18 +29,27 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Tracking ID</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Destinatario</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Estado</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Prioridad</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Ver</th>
           </tr>
         </thead>
         <tbody className="divide-y">
           {envios.map((envio) => (
-            <tr key={envio.id} className="hover:bg-gray-50 transition-colors">
+            <tr key={envio.trackingId} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 font-mono text-sm text-blue-600 font-bold">{envio.trackingId}</td>
-              <td className="px-6 py-4"><p className="text-sm font-medium">{envio.destinatario}</p></td>
-              <td className="px-6 py-4"><Etiqueta>{envio.estado}</Etiqueta></td>
-              <td className="px-6 py-4"><Etiqueta>{envio.prioridad}</Etiqueta></td>
-              <td className="px-6 py-4"><button onClick={() => alSeleccionar(envio)} className="text-gray-400 hover:text-blue-600"><Eye className="w-5 h-5" /></button></td>
+              <td className="px-6 py-4">
+                <p className="text-sm font-medium">
+                  {/* Unimos nombre y apellido del modelo de Ciro */}
+                  {`${envio.nombre} ${envio.apellido || ''}`}
+                </p>
+              </td>
+              <td className="px-6 py-4">
+                <Etiqueta>{envio.estado}</Etiqueta>
+              </td>
+              <td className="px-6 py-4">
+                <button onClick={() => alSeleccionar(envio)} className="text-gray-400 hover:text-blue-600">
+                  <Eye className="w-5 h-5" />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
