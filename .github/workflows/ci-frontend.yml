@@ -1,0 +1,39 @@
+name: Frontend CI Pipeline
+
+# El pipeline se ejecuta cuando hacen push o abren un Pull Request en la rama main
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Descarga el código del repositorio a la máquina virtual
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    # 2. Prepara el entorno con Node.js
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Versión estable recomendada para Vite/React
+
+    # 3. Instala las dependencias (el equivalente a tu npm install)
+    - name: Instalar dependencias
+      run: npm ci
+
+    # 4. Ejecuta el Linter (Verifica errores de sintaxis y buenas prácticas)
+    - name: Linter
+      run: npm run lint
+
+    # 5. Ejecuta los Tests (Pruebas mínimas)
+    - name: Tests
+      run: npm run test --if-present
+
+    # 6. Compila el proyecto (Build)
+    - name: Build
+      run: npm run build
