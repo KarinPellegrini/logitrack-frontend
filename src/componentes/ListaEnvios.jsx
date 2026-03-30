@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, PlusCircle, Eye } from 'lucide-react';
+import { Search, PlusCircle, Eye, AlertTriangle } from 'lucide-react';
 import Etiqueta from './elementos/Etiqueta';
 
 const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, alCambiarBusqueda }) => (
@@ -22,6 +22,7 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
         )}
       </div>
     </div>
+
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
       <table className="w-full text-left border-collapse">
         <thead className="bg-gray-50 border-b">
@@ -29,18 +30,45 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Tracking ID</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Destinatario</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Estado</th>
+            {/* NUEVA COLUMNA: Prioridad calculada por la IA */}
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Prioridad</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Ver</th>
           </tr>
         </thead>
         <tbody className="divide-y">
           {envios.map((envio) => (
-            <tr key={envio.id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-6 py-4 font-mono text-sm text-blue-600 font-bold">{envio.trackingId}</td>
-              <td className="px-6 py-4"><p className="text-sm font-medium">{envio.destinatario}</p></td>
-              <td className="px-6 py-4"><Etiqueta>{envio.estado}</Etiqueta></td>
-              <td className="px-6 py-4"><Etiqueta>{envio.prioridad}</Etiqueta></td>
-              <td className="px-6 py-4"><button onClick={() => alSeleccionar(envio)} className="text-gray-400 hover:text-blue-600"><Eye className="w-5 h-5" /></button></td>
+            <tr key={envio.trackingId} className="hover:bg-gray-50 transition-colors">
+              <td className="px-6 py-4 font-mono text-xs text-blue-600 font-bold">{envio.trackingId}</td>
+              <td className="px-6 py-4">
+                <p className="text-sm font-medium">
+                  {`${envio.nombre} ${envio.apellido || ''}`}
+                </p>
+              </td>
+              <td className="px-6 py-4">
+                <Etiqueta>{envio.estado}</Etiqueta>
+              </td>
+              {/* RENDERIZADO DE PRIORIDAD CON FALLBACK PARA NULLS */}
+              <td className="px-6 py-4">
+                {envio.prioridad ? (
+                  <span className={`flex items-center gap-1.5 text-[10px] font-black px-2 py-1 rounded-md border ${
+                    envio.prioridad === 'ALTA' 
+                      ? 'bg-red-50 text-red-700 border-red-100' 
+                      : envio.prioridad === 'MEDIA'
+                      ? 'bg-amber-50 text-amber-700 border-amber-100'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                  }`}>
+                    {envio.prioridad === 'ALTA' && <AlertTriangle size={10} />}
+                    {envio.prioridad}
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-gray-300 italic">PENDIENTE</span>
+                )}
+              </td>
+              <td className="px-6 py-4">
+                <button onClick={() => alSeleccionar(envio)} className="text-gray-400 hover:text-blue-600">
+                  <Eye className="w-5 h-5" />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
