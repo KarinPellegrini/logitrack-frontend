@@ -10,7 +10,7 @@ import DetalleEnvio from './componentes/DetalleEnvio';
 import FormularioEnvio from './componentes/FormularioEnvio';
 import ModalARCO from './componentes/ModalARCO';
 
-const API_URL = 'http://localhost:8080/api/envios';
+const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
 
 export default function App() {
   // --- ESTADOS ---
