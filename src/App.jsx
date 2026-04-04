@@ -72,13 +72,22 @@ export default function App() {
     setTerminoBusqueda('');
   };
 
+  // --- 4. CIERRE DE SESIÓN: limpia todo el estado para no filtrar datos entre sesiones ---
+  const cerrarSesion = () => {
+    setUsuario(null);
+    setVista('listado');
+    setTerminoBusqueda('');
+    setEnvioSeleccionado(null);
+    setEnvios([]);
+  };
+
   if (!usuario) {
     return <Acceso alIngresar={(user) => { setUsuario(user); mostrarNotificacion(`Hola, ${user.nombre}`); }} />;
   }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
-      <BarraNavegacion usuario={usuario} alCerrarSesion={() => setUsuario(null)} alIrInicio={cerrarTodo} />
+      <BarraNavegacion usuario={usuario} alCerrarSesion={cerrarSesion} alIrInicio={cerrarTodo} />
 
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full pb-20">
         {vista === 'listado' && (
