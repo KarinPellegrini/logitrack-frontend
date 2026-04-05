@@ -9,6 +9,7 @@ import ListaEnvios from './componentes/ListaEnvios';
 import DetalleEnvio from './componentes/DetalleEnvio';
 import FormularioEnvio from './componentes/FormularioEnvio';
 import GestionUsuarios from './componentes/GestionUsuarios';
+import SolicitudesBorrado from './componentes/SolicitudesBorrado';
 import ModalARCO from './componentes/ModalARCO';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
@@ -23,6 +24,7 @@ export default function App() {
   const [modalARCOAbierto, setModalARCOAbierto] = useState(false);
   const [envios, setEnvios] = useState([]);
   const [filtroFechas, setFiltroFechas] = useState({ desde: null, hasta: null });
+  const [solicitudesBorrado, setSolicitudesBorrado] = useState([]);
 
   // --- 1. NOTIFICACIÓN ---
   const mostrarNotificacion = (msj) => {
@@ -89,6 +91,14 @@ export default function App() {
     }
   }, [usuario, terminoBusqueda, filtroFechas]);
 
+  useEffect(() => {
+    if (usuario?.rol === 'Supervisor') {
+      axios.get(`${API_URL}/solicitudes-borrado`)
+        .then(r => setSolicitudesBorrado(r.data))
+        .catch(() => {});
+    }
+  }, [usuario, vista]);
+
   const cerrarTodo = () => {
     setEnvioSeleccionado(null);
     setVista('listado');
@@ -115,7 +125,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
-      <BarraNavegacion usuario={usuario} alCerrarSesion={cerrarSesion} alIrInicio={cerrarTodo} alIrUsuarios={() => setVista('usuarios')} />
+      <BarraNavegacion
+        usuario={usuario}
+        alCerrarSesion={cerrarSesion}
+        alIrInicio={cerrarTodo}
+        alIrUsuarios={() => setVista('usuarios')}
+        alIrSolicitudes={() => setVista('solicitudes-borrado')}
+        cantidadSolicitudes={solicitudesBorrado.length}
+      />
 
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full pb-20">
         {vista === 'listado' && (
@@ -144,6 +161,10 @@ export default function App() {
             alVolver={cerrarTodo}
             alActualizarRol={(usuarioActualizado) => setUsuario(usuarioActualizado)}
           />
+        )}
+
+        {vista === 'solicitudes-borrado' && usuario.rol === 'Supervisor' && (
+          <SolicitudesBorrado solicitudes={solicitudesBorrado} alVolver={cerrarTodo} />
         )}
       </main>
 

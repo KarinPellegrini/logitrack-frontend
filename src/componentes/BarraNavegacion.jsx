@@ -1,7 +1,7 @@
 import React from 'react';
-import { Package, User, Shield, LogOut, Users } from 'lucide-react';
+import { Package, User, Shield, LogOut, Users, ShieldOff } from 'lucide-react';
 
-const BarraNavegacion = ({ usuario, alCerrarSesion, alIrInicio, alIrUsuarios }) => (
+const BarraNavegacion = ({ usuario, alCerrarSesion, alIrInicio, alIrUsuarios, alIrSolicitudes, cantidadSolicitudes }) => (
   <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
       <div className="flex items-center gap-2 cursor-pointer" onClick={alIrInicio}>
@@ -10,12 +10,25 @@ const BarraNavegacion = ({ usuario, alCerrarSesion, alIrInicio, alIrUsuarios }) 
       </div>
       <div className="flex items-center gap-4">
         {usuario.rol === 'Supervisor' && (
-          <button
-            onClick={alIrUsuarios}
-            className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-purple-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-purple-50"
-          >
-            <Users size={14} /> Usuarios
-          </button>
+          <>
+            <button
+              onClick={alIrUsuarios}
+              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-purple-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-purple-50"
+            >
+              <Users size={14} /> Usuarios
+            </button>
+            <button
+              onClick={alIrSolicitudes}
+              className="relative flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-red-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
+            >
+              <ShieldOff size={14} /> Borrado
+              {cantidadSolicitudes > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {cantidadSolicitudes}
+                </span>
+              )}
+            </button>
+          </>
         )}
         <div className="flex items-center gap-3 pr-4 border-r border-gray-200">
           <div className="text-right hidden sm:block">
