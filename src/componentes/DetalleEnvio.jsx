@@ -1,6 +1,9 @@
-import React from 'react';
-import { ArrowLeft, Package, Truck, Brain, Loader } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ArrowLeft, Package, Truck, Brain, Loader, Clock } from 'lucide-react';
+import axios from 'axios';
 import Etiqueta from './elementos/Etiqueta';
+
+const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
 
 const Campo = ({ label, value }) => (
   <div>
@@ -15,9 +18,23 @@ const TRANSICIONES = {
   EN_SUCURSAL: { siguiente: 'ENTREGADO',    label: 'Marcar como Entregado', color: 'bg-emerald-600 hover:bg-emerald-700', rolesPermitidos: ['Supervisor'] },
 };
 
+const ETIQUETAS_ESTADO = {
+  REGISTRADO:  'bg-gray-100 text-gray-600',
+  EN_TRANSITO: 'bg-blue-100 text-blue-700',
+  EN_SUCURSAL: 'bg-amber-100 text-amber-700',
+  ENTREGADO:   'bg-emerald-100 text-emerald-700',
+};
+
 const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
   const transicion = TRANSICIONES[envio.estado];
   const puedeAvanzar = transicion && transicion.rolesPermitidos.includes(rol);
+  const [historial, setHistorial] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${API_URL}/${envio.trackingId}/historial`)
+      .then(r => setHistorial(r.data))
+      .catch(() => {});
+  }, [envio.trackingId, envio.estado]);
 
   return (
     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
@@ -72,11 +89,32 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
         )}
       </div>
 
-      {/* Auditoría de estado */}
-      {envio.fechaCambioEstado && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-[11px] text-gray-500">
-          Último cambio por <span className="font-bold text-gray-700">{envio.usuarioCambioEstado}</span> el{' '}
-          <span className="font-bold text-gray-700">{new Date(envio.fechaCambioEstado).toLocaleString('es-AR')}</span>
+      {/* Historial de cambios de estado */}
+      {historial.length > 0 && (
+        <div className="mt-4 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+          <div className="flex items-center gap-2 text-gray-500 font-bold uppercase text-[10px] mb-3">
+            <Clock size={13} /> Historial de estados
+          </div>
+          <ol className="relative border-l border-gray-200 ml-2 space-y-3">
+            {historial.map((h, i) => (
+              <li key={h.id} className="ml-4">
+                <span className="absolute -left-1.5 w-3 h-3 rounded-full bg-blue-400 border-2 border-white" />
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${ETIQUETAS_ESTADO[h.estadoAnterior] ?? 'bg-gray-100 text-gray-500'}`}>
+                    {h.estadoAnterior.replace('_', ' ')}
+                  </span>
+                  <span className="text-[10px] text-gray-400">→</span>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${ETIQUETAS_ESTADO[h.estadoNuevo] ?? 'bg-gray-100 text-gray-500'}`}>
+                    {h.estadoNuevo.replace('_', ' ')}
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-400 mt-0.5">
+                  <span className="font-semibold text-gray-600">{h.usuario}</span>
+                  {' · '}{new Date(h.fechaHora).toLocaleString('es-AR')}
+                </p>
+              </li>
+            ))}
+          </ol>
         </div>
       )}
 
