@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Package, Truck, Brain, Loader, Clock } from 'lucide-react';
 import axios from 'axios';
 import Etiqueta from './elementos/Etiqueta';
+import SemaforoPrioridad from './elementos/SemaforoPrioridad';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
 
@@ -78,7 +79,10 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
       <div className="mt-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 space-y-3">
         <div className="flex items-center gap-2 text-blue-600 font-bold uppercase text-[10px]"><Brain size={14} /> Análisis IA</div>
         <div className="grid grid-cols-2 gap-4">
-          <Campo label="Prioridad" value={envio.prioridad} />
+          <div>
+            <p className="text-[10px] text-blue-400 uppercase font-black tracking-widest mb-1.5">Prioridad</p>
+            <SemaforoPrioridad prioridad={envio.prioridad} size="lg" />
+          </div>
           <Campo label="Distancia estimada" value={envio.distanciaKm != null ? `${envio.distanciaKm} km` : null} />
         </div>
         {envio.motivoPrioridad && (
