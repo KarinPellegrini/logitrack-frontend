@@ -8,9 +8,10 @@ const FormularioEnvio = ({ alGuardar, alVolver }) => {
     apellido: '',
     dni: '',
     direccion: '',
-    codigoPostalOrigen: '', // <--- NUEVO: Requerido para calcular distancia
-    codigoPostalDestino: '', // <--- Cambiado para coincidir con el DTO
-    peso: '' 
+    codigoPostalOrigen: '',
+    codigoPostalDestino: '',
+    peso: '',
+    tipoEnvio: 'Estandar'
   });
 
   const [terminosAceptados, setTerminosAceptados] = useState(false);
@@ -69,6 +70,12 @@ const FormularioEnvio = ({ alGuardar, alVolver }) => {
               <input name="peso" required type="number" step="0.1" className="w-full p-3 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 pr-10" placeholder="Peso total de la carga *" value={envio.peso} onChange={handleChange} />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">kg</span>
             </div>
+            <select name="tipoEnvio" className="w-full p-3 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" value={envio.tipoEnvio} onChange={handleChange}>
+              <option value="Estandar">Estándar</option>
+              <option value="Fragil">Frágil</option>
+              <option value="Medica">Médica</option>
+              <option value="Peligrosa">Peligrosa</option>
+            </select>
           </div>
 
           {/* COMPROMISO DE PRIVACIDAD */}
