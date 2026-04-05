@@ -2,16 +2,38 @@ import React, { useState } from 'react';
 import { ArrowLeft, ShieldCheck, Package, User, MapPin } from 'lucide-react';
 
 const REGLAS = {
-  nombre:              { regex: /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/, msg: 'Solo se permiten letras.' },
-  apellido:            { regex: /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/, msg: 'Solo se permiten letras.' },
-  dni:                 { regex: /^\d{7,8}$/, msg: 'El DNI debe tener 7 u 8 dígitos numéricos.' },
-  codigoPostalOrigen:  { regex: /^\d{4}$/, msg: 'El CP debe tener exactamente 4 dígitos.' },
-  codigoPostalDestino: { regex: /^\d{4}$/, msg: 'El CP debe tener exactamente 4 dígitos.' },
+  nombre:   { regex: /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/, msg: 'Solo se permiten letras.' },
+  apellido: { regex: /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/, msg: 'Solo se permiten letras.' },
+  dni:      { regex: /^\d{7,8}$/, msg: 'El DNI debe tener 7 u 8 dígitos numéricos.' },
+};
+
+const REGIONES_CP = [
+  { min: 1000, max: 1499, nombre: 'CABA' },
+  { min: 1500, max: 1999, nombre: 'GBA' },
+  { min: 2000, max: 2999, nombre: 'Santa Fe / Entre Ríos' },
+  { min: 3000, max: 3999, nombre: 'Litoral' },
+  { min: 4000, max: 4999, nombre: 'NOA' },
+  { min: 5000, max: 5999, nombre: 'Córdoba / Cuyo' },
+  { min: 6000, max: 6999, nombre: 'Pampeana' },
+  { min: 7000, max: 7999, nombre: 'Buenos Aires interior' },
+  { min: 8000, max: 8999, nombre: 'Patagonia' },
+  { min: 9000, max: 9499, nombre: 'Patagonia Sur' },
+];
+
+const obtenerRegionCP = (cp) => {
+  if (!/^\d{4}$/.test(cp)) return null;
+  const n = parseInt(cp, 10);
+  const region = REGIONES_CP.find(r => n >= r.min && n <= r.max);
+  return region ? region.nombre : null;
 };
 
 const validarCampo = (name, value) => {
   if (!value) return 'Este campo es obligatorio.';
   if (REGLAS[name] && !REGLAS[name].regex.test(value)) return REGLAS[name].msg;
+  if (name === 'codigoPostalOrigen' || name === 'codigoPostalDestino') {
+    if (!/^\d{4}$/.test(value)) return 'El CP debe tener exactamente 4 dígitos.';
+    if (!obtenerRegionCP(value)) return 'CP fuera del rango válido argentino (1000–9499).';
+  }
   return '';
 };
 
@@ -112,12 +134,18 @@ const FormularioEnvio = ({ alGuardar, alVolver }) => {
             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><MapPin size={12}/> Puntos de Control y Carga</label>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <input name="codigoPostalOrigen" className={inputClass('codigoPostalOrigen')} placeholder="CP Origen *" value={envio.codigoPostalOrigen} onChange={handleChange} onBlur={handleBlur} />
+                <input name="codigoPostalOrigen" inputMode="numeric" className={inputClass('codigoPostalOrigen')} placeholder="CP Origen *" value={envio.codigoPostalOrigen} onChange={handleChange} onBlur={handleBlur} />
                 <ErrorMsg campo="codigoPostalOrigen" />
+                {!errores.codigoPostalOrigen && obtenerRegionCP(envio.codigoPostalOrigen) && (
+                  <p className="text-xs text-emerald-600 mt-1 ml-1 font-medium">✓ {obtenerRegionCP(envio.codigoPostalOrigen)}</p>
+                )}
               </div>
               <div>
-                <input name="codigoPostalDestino" className={inputClass('codigoPostalDestino')} placeholder="CP Destino *" value={envio.codigoPostalDestino} onChange={handleChange} onBlur={handleBlur} />
+                <input name="codigoPostalDestino" inputMode="numeric" className={inputClass('codigoPostalDestino')} placeholder="CP Destino *" value={envio.codigoPostalDestino} onChange={handleChange} onBlur={handleBlur} />
                 <ErrorMsg campo="codigoPostalDestino" />
+                {!errores.codigoPostalDestino && obtenerRegionCP(envio.codigoPostalDestino) && (
+                  <p className="text-xs text-emerald-600 mt-1 ml-1 font-medium">✓ {obtenerRegionCP(envio.codigoPostalDestino)}</p>
+                )}
               </div>
             </div>
             <div className="relative">
