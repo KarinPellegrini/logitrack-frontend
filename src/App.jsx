@@ -115,6 +115,15 @@ export default function App() {
     }
   }, [usuario, vista]);
 
+  const manejarAnonimizacion = async (trackingId) => {
+    try {
+      const { data } = await axios.get(`${API_URL}/${trackingId}`);
+      setEnvios(prev => prev.map(e => e.trackingId === trackingId ? data : e));
+      if (envioSeleccionado?.trackingId === trackingId) setEnvioSeleccionado(data);
+      setSolicitudesBorrado(prev => [...prev.filter(e => e.trackingId !== trackingId), data]);
+    } catch { /* silencioso */ }
+  };
+
   const cerrarTodo = () => {
     setEnvioSeleccionado(null);
     setVista('listado');
@@ -211,7 +220,7 @@ export default function App() {
         </div>
       </footer>
 
-      <ModalARCO abierto={modalARCOAbierto} alCerrar={() => setModalARCOAbierto(false)} />
+      <ModalARCO abierto={modalARCOAbierto} alCerrar={() => setModalARCOAbierto(false)} alAnonimizar={manejarAnonimizacion} />
 
       {notificacion && (
         <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4">

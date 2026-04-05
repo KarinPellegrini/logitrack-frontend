@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
 
-const ModalARCO = ({ abierto, alCerrar }) => {
+const ModalARCO = ({ abierto, alCerrar, alAnonimizar }) => {
   const [vista, setVista] = useState('info');
   const [trackingId, setTrackingId] = useState('');
   const [cargando, setCargando] = useState(false);
@@ -27,6 +27,7 @@ const ModalARCO = ({ abierto, alCerrar }) => {
     try {
       const res = await axios.post(`${API_URL}/${trackingId.trim()}/anonimizar`);
       setResultado({ ok: true, mensaje: res.data.mensaje });
+      if (alAnonimizar) alAnonimizar(trackingId.trim());
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data || 'No se encontró el envío o ya fue anonimizado.';
       setResultado({ ok: false, mensaje: msg });
