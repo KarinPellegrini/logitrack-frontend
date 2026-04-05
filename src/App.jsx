@@ -28,7 +28,25 @@ export default function App() {
     setTimeout(() => setNotificacion(null), 4000);
   };
 
-  // --- 2. LÓGICA DE PERSISTENCIA (POST) ---
+  // --- 2. CAMBIO DE ESTADO ---
+  const cambiarEstado = async (trackingId, nuevoEstado) => {
+    try {
+      const response = await axios.put(
+        `${API_URL}/${trackingId}/estado`,
+        null,
+        { params: { estado: nuevoEstado, usuario: usuario.nombre } }
+      );
+      const envioActualizado = response.data;
+      setEnvioSeleccionado(envioActualizado);
+      setEnvios(prev => prev.map(e => e.trackingId === trackingId ? envioActualizado : e));
+      mostrarNotificacion(`Estado actualizado a: ${nuevoEstado.replace('_', ' ')}`);
+    } catch (error) {
+      mostrarNotificacion("Error al actualizar el estado");
+      console.error("Estado Error:", error);
+    }
+  };
+
+  // --- 3. LÓGICA DE PERSISTENCIA (POST) ---
   const guardarNuevoEnvio = async (datos) => {
     try {
       // Enviamos el objeto completo (incluyendo cpOrigen para la IA)
@@ -106,7 +124,7 @@ export default function App() {
         )}
 
         {vista === 'detalle' && envioSeleccionado && (
-          <DetalleEnvio envio={envioSeleccionado} alVolver={cerrarTodo} />
+          <DetalleEnvio envio={envioSeleccionado} alVolver={cerrarTodo} rol={usuario.rol} alCambiarEstado={cambiarEstado} />
         )}
       </main>
 
