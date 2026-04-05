@@ -45,8 +45,22 @@ const LogsAuditoria = ({ alVolver }) => {
     setBuscado(false);
   };
 
-  // Busca automáticamente al cargar con filtros vacíos (muestra todo)
-  useEffect(() => { buscar(); }, []);
+  // Carga inicial con filtros vacíos (muestra todo)
+  useEffect(() => {
+    const cargarInicial = async () => {
+      setCargando(true);
+      try {
+        const r = await axios.get(`${API_URL}/buscar`, { params: {} });
+        setLogs(r.data);
+        setBuscado(true);
+      } catch {
+        setLogs([]);
+      } finally {
+        setCargando(false);
+      }
+    };
+    cargarInicial();
+  }, []);
 
   const tieneFiltros = usuario.trim() || accion;
 

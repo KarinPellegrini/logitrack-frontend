@@ -10,7 +10,7 @@ const MAX_INTENTOS = 3;
 const formatoUsuarioValido = (usuario) => /^[a-zA-Z0-9._]{3,20}$/.test(usuario);
 
 const Contador = ({ hasta, onVencido }) => {
-  const [segundos, setSegundos] = useState(Math.ceil((hasta - Date.now()) / 1000));
+  const [segundos, setSegundos] = useState(() => Math.ceil((hasta - Date.now()) / 1000));
   useEffect(() => {
     const intervalo = setInterval(() => {
       const restantes = Math.ceil((hasta - Date.now()) / 1000);
@@ -18,7 +18,7 @@ const Contador = ({ hasta, onVencido }) => {
       else setSegundos(restantes);
     }, 1000);
     return () => clearInterval(intervalo);
-  }, [hasta]);
+  }, [hasta, onVencido]);
   return (
     <div className="flex flex-col items-center gap-2">
       <span className="text-5xl font-black text-red-600 tabular-nums">{segundos}</span>

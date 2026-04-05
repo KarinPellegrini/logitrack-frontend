@@ -71,15 +71,19 @@ const Dashboard = ({ alVolver, alIrLogs }) => {
         <>
           {/* Tarjetas de estado */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {ESTADOS.map(({ key, label, icon: Icon, color, ring }) => (
-              <div key={key} className={`bg-white rounded-2xl border ${ring} p-5 shadow-sm`}>
-                <div className={`inline-flex p-2 rounded-xl mb-3 ${color}`}>
-                  <Icon size={18} />
+            {ESTADOS.map((estado) => {
+              const { key, label, color, ring } = estado;
+              const Icon = estado.icon;
+              return (
+                <div key={key} className={`bg-white rounded-2xl border ${ring} p-5 shadow-sm`}>
+                  <div className={`inline-flex p-2 rounded-xl mb-3 ${color}`}>
+                    <Icon size={18} />
+                  </div>
+                  <p className="text-3xl font-black text-gray-800">{datos.enviosPorEstado?.[key] ?? 0}</p>
+                  <p className="text-xs text-gray-400 font-semibold uppercase mt-1">{label}</p>
                 </div>
-                <p className="text-3xl font-black text-gray-800">{datos.enviosPorEstado?.[key] ?? 0}</p>
-                <p className="text-xs text-gray-400 font-semibold uppercase mt-1">{label}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Total general + acceso rápido a logs */}
@@ -147,7 +151,7 @@ const Dashboard = ({ alVolver, alIrLogs }) => {
                 <p className="text-gray-300 text-sm text-center py-6">Sin datos.</p>
               ) : (
                 <div className="space-y-3">
-                  {datos.usuariosMasActivos?.map((u, i) => {
+                  {datos.usuariosMasActivos?.map((u) => {
                     const max = datos.usuariosMasActivos[0]?.acciones ?? 1;
                     const pct = Math.round((u.acciones / max) * 100);
                     return (

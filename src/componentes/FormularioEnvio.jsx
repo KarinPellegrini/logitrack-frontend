@@ -37,6 +37,9 @@ const validarCampo = (name, value) => {
   return '';
 };
 
+const ErrorMsg = ({ campo, errores }) =>
+  errores[campo] ? <p className="text-xs text-red-500 mt-1 ml-1">{errores[campo]}</p> : null;
+
 const FormularioEnvio = ({ alGuardar, alVolver }) => {
   const [envio, setEnvio] = useState({
     nombre: '',
@@ -93,9 +96,6 @@ const FormularioEnvio = ({ alGuardar, alVolver }) => {
       errores[campo] ? 'ring-2 ring-red-400 bg-red-50' : 'focus:ring-blue-500'
     }`;
 
-  const ErrorMsg = ({ campo }) =>
-    errores[campo] ? <p className="text-xs text-red-500 mt-1 ml-1">{errores[campo]}</p> : null;
-
   return (
     <div className="max-w-2xl mx-auto animate-in fade-in duration-500 pb-10">
       <button onClick={alVolver} className="flex items-center gap-2 text-gray-400 mb-6 hover:text-gray-800 transition-colors font-medium">
@@ -112,20 +112,20 @@ const FormularioEnvio = ({ alGuardar, alVolver }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <input name="nombre" className={inputClass('nombre')} placeholder="Nombre *" value={envio.nombre} onChange={handleChange} onBlur={handleBlur} />
-                <ErrorMsg campo="nombre" />
+                <ErrorMsg campo="nombre" errores={errores} />
               </div>
               <div>
                 <input name="apellido" className={inputClass('apellido')} placeholder="Apellido *" value={envio.apellido} onChange={handleChange} onBlur={handleBlur} />
-                <ErrorMsg campo="apellido" />
+                <ErrorMsg campo="apellido" errores={errores} />
               </div>
             </div>
             <div>
               <input name="dni" type="text" inputMode="numeric" className={inputClass('dni')} placeholder="DNI del destinatario *" value={envio.dni} onChange={handleChange} onBlur={handleBlur} />
-              <ErrorMsg campo="dni" />
+              <ErrorMsg campo="dni" errores={errores} />
             </div>
             <div>
               <input name="direccion" className={inputClass('direccion')} placeholder="Dirección de entrega (Calle y nro) *" value={envio.direccion} onChange={handleChange} onBlur={handleBlur} />
-              <ErrorMsg campo="direccion" />
+              <ErrorMsg campo="direccion" errores={errores} />
             </div>
           </div>
 
@@ -135,14 +135,14 @@ const FormularioEnvio = ({ alGuardar, alVolver }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <input name="codigoPostalOrigen" inputMode="numeric" className={inputClass('codigoPostalOrigen')} placeholder="CP Origen *" value={envio.codigoPostalOrigen} onChange={handleChange} onBlur={handleBlur} />
-                <ErrorMsg campo="codigoPostalOrigen" />
+                <ErrorMsg campo="codigoPostalOrigen" errores={errores} />
                 {!errores.codigoPostalOrigen && obtenerRegionCP(envio.codigoPostalOrigen) && (
                   <p className="text-xs text-emerald-600 mt-1 ml-1 font-medium">✓ {obtenerRegionCP(envio.codigoPostalOrigen)}</p>
                 )}
               </div>
               <div>
                 <input name="codigoPostalDestino" inputMode="numeric" className={inputClass('codigoPostalDestino')} placeholder="CP Destino *" value={envio.codigoPostalDestino} onChange={handleChange} onBlur={handleBlur} />
-                <ErrorMsg campo="codigoPostalDestino" />
+                <ErrorMsg campo="codigoPostalDestino" errores={errores} />
                 {!errores.codigoPostalDestino && obtenerRegionCP(envio.codigoPostalDestino) && (
                   <p className="text-xs text-emerald-600 mt-1 ml-1 font-medium">✓ {obtenerRegionCP(envio.codigoPostalDestino)}</p>
                 )}

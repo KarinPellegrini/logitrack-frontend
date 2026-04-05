@@ -128,7 +128,7 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
             <Clock size={13} /> Historial de estados
           </div>
           <ol className="relative border-l border-gray-200 ml-2 space-y-3">
-            {historial.map((h, i) => (
+            {historial.map((h) => (
               <li key={h.id} className="ml-4">
                 <span className="absolute -left-1.5 w-3 h-3 rounded-full bg-blue-400 border-2 border-white" />
                 <div className="flex flex-wrap items-center gap-2">
