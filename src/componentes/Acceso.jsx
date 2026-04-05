@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Package, User, Lock, LogIn, AlertCircle, ShieldAlert } from 'lucide-react';
+import axios from 'axios';
 
-// Usuarios de prueba para el prototipo
-const USUARIOS_MOCK = [
-  { id: 1, usuario: 'melina', clave: '1234', nombre: 'Melina Scabini', rol: 'Operador' },
-  { id: 2, usuario: 'ciro', clave: 'admin', nombre: 'Ciro López', rol: 'Supervisor' }
-];
+const API_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
 
-const TIEMPO_BLOQUEO_MS = 30000; // 30 segundos
+const TIEMPO_BLOQUEO_MS = 30000;
 const MAX_INTENTOS = 3;
 
 const formatoUsuarioValido = (usuario) => /^[a-zA-Z0-9._]{3,20}$/.test(usuario);
 
-// Contador regresivo: maneja su propio tick y muestra los segundos
 const Contador = ({ hasta, onVencido }) => {
   const [segundos, setSegundos] = useState(Math.ceil((hasta - Date.now()) / 1000));
 
@@ -41,6 +37,7 @@ const Acceso = ({ alIngresar }) => {
   const [datos, setDatos] = useState({ usuario: '', clave: '' });
   const [error, setError] = useState('');
   const [errorFormato, setErrorFormato] = useState('');
+  const [cargando, setCargando] = useState(false);
 
   const [intentosFallidos, setIntentosFallidos] = useState(
     () => parseInt(localStorage.getItem('lt_intentos') || '0')
@@ -54,49 +51,47 @@ const Acceso = ({ alIngresar }) => {
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setDatos({ ...datos, [name]: value });
-
     if (name === 'usuario') {
-      if (value && !formatoUsuarioValido(value)) {
-        setErrorFormato('Solo letras, números, puntos o guiones bajos (3-20 caracteres).');
-      } else {
-        setErrorFormato('');
-      }
+      setErrorFormato(value && !formatoUsuarioValido(value)
+        ? 'Solo letras, números, puntos o guiones bajos (3-20 caracteres).'
+        : '');
     }
   };
 
-  const manejarLogin = (e) => {
+  const registrarIntentoFallido = () => {
+    const nuevosIntentos = intentosFallidos + 1;
+    setIntentosFallidos(nuevosIntentos);
+    localStorage.setItem('lt_intentos', nuevosIntentos);
+    if (nuevosIntentos >= MAX_INTENTOS) {
+      const nuevoBloqueadoHasta = Date.now() + TIEMPO_BLOQUEO_MS;
+      setBloqueadoHasta(nuevoBloqueadoHasta);
+      localStorage.setItem('lt_bloqueado', nuevoBloqueadoHasta);
+    } else {
+      setError(`Credenciales incorrectas. Intentos restantes: ${MAX_INTENTOS - nuevosIntentos}`);
+    }
+  };
+
+  const manejarLogin = async (e) => {
     e.preventDefault();
     setError('');
-
     if (estaBloqueado) return;
-
     if (!formatoUsuarioValido(datos.usuario)) {
       setErrorFormato('Formato de usuario inválido.');
       return;
     }
 
-    const usuarioEncontrado = USUARIOS_MOCK.find(
-      u => u.usuario === datos.usuario && u.clave === datos.clave
-    );
-
-    if (usuarioEncontrado) {
+    setCargando(true);
+    try {
+      const response = await axios.post(API_URL, datos);
       setIntentosFallidos(0);
       setBloqueadoHasta(null);
       localStorage.removeItem('lt_intentos');
       localStorage.removeItem('lt_bloqueado');
-      alIngresar(usuarioEncontrado);
-    } else {
-      const nuevosIntentos = intentosFallidos + 1;
-      setIntentosFallidos(nuevosIntentos);
-      localStorage.setItem('lt_intentos', nuevosIntentos);
-
-      if (nuevosIntentos >= MAX_INTENTOS) {
-        const nuevoBloqueadoHasta = Date.now() + TIEMPO_BLOQUEO_MS;
-        setBloqueadoHasta(nuevoBloqueadoHasta);
-        localStorage.setItem('lt_bloqueado', nuevoBloqueadoHasta);
-      } else {
-        setError(`Credenciales incorrectas. Intentos restantes: ${MAX_INTENTOS - nuevosIntentos}`);
-      }
+      alIngresar(response.data);
+    } catch (err) {
+      registrarIntentoFallido();
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -123,9 +118,7 @@ const Acceso = ({ alIngresar }) => {
 
           {estaBloqueado ? (
             <div className="flex flex-col items-center gap-5 py-6 text-center">
-              <div className="bg-red-100 text-red-600 p-4 rounded-2xl">
-                <ShieldAlert size={32} />
-              </div>
+              <div className="bg-red-100 text-red-600 p-4 rounded-2xl"><ShieldAlert size={32} /></div>
               <p className="font-bold text-gray-800">Acceso bloqueado temporalmente</p>
               <Contador hasta={bloqueadoHasta} onVencido={desbloquear} />
               <p className="text-xs text-gray-400">Demasiados intentos fallidos. Esperá para volver a intentar.</p>
@@ -144,9 +137,7 @@ const Acceso = ({ alIngresar }) => {
                     placeholder="Usuario" value={datos.usuario} onChange={manejarCambio}
                   />
                 </div>
-                {errorFormato && (
-                  <p className="text-[10px] text-red-500 px-1 font-medium">{errorFormato}</p>
-                )}
+                {errorFormato && <p className="text-[10px] text-red-500 px-1 font-medium">{errorFormato}</p>}
               </div>
 
               <div className="space-y-1">
@@ -169,10 +160,10 @@ const Acceso = ({ alIngresar }) => {
 
               <button
                 type="submit"
-                disabled={!!errorFormato}
+                disabled={!!errorFormato || cargando}
                 className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <LogIn size={18} /> Iniciar Sesión
+                <LogIn size={18} /> {cargando ? 'Verificando...' : 'Iniciar Sesión'}
               </button>
             </form>
           )}
