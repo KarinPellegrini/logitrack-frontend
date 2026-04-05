@@ -36,7 +36,7 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
-              type="text" placeholder="Buscar por nombre o apellido..."
+              type="text" placeholder="Buscar por nombre, apellido o Tracking ID..."
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-80 text-sm"
               value={terminoBusqueda} onChange={(e) => alCambiarBusqueda(e.target.value)}
             />
@@ -90,7 +90,7 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
             {envios.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center text-sm text-gray-400 font-medium">
-                  No se encontraron envíos para el período seleccionado.
+                  No se encontraron envíos.
                 </td>
               </tr>
             ) : (
