@@ -21,6 +21,7 @@ export default function App() {
   const [notificacion, setNotificacion] = useState(null);
   const [modalARCOAbierto, setModalARCOAbierto] = useState(false);
   const [envios, setEnvios] = useState([]);
+  const [filtroFechas, setFiltroFechas] = useState({ desde: null, hasta: null });
 
   // --- 1. NOTIFICACIÓN ---
   const mostrarNotificacion = (msj) => {
@@ -62,17 +63,20 @@ export default function App() {
     }
   };
 
-  // --- 3. SINCRONIZACIÓN CON BACKEND Y BÚSQUEDA DE CIRO ---
+  // --- 3. SINCRONIZACIÓN CON BACKEND ---
   useEffect(() => {
     const ejecutarCarga = async () => {
       try {
-        // MODIFICACIÓN: Si hay texto en la lupa, usamos el endpoint de búsqueda del backend
-        const url = terminoBusqueda.trim() 
-          ? `${API_URL}/buscar?nombre=${terminoBusqueda}` 
-          : API_URL;
-          
+        let url;
+        if (filtroFechas.desde && filtroFechas.hasta) {
+          url = `${API_URL}/por-fecha?desde=${filtroFechas.desde}&hasta=${filtroFechas.hasta}`;
+        } else if (terminoBusqueda.trim()) {
+          url = `${API_URL}/buscar?nombre=${terminoBusqueda}`;
+        } else {
+          url = API_URL;
+        }
         const response = await axios.get(url);
-        setEnvios(response.data); 
+        setEnvios(response.data);
       } catch (error) {
         mostrarNotificacion("Error de conexión con el servidor");
         console.error("Fetch Error:", error);
@@ -82,11 +86,16 @@ export default function App() {
     if (usuario) {
       ejecutarCarga();
     }
-  }, [usuario, terminoBusqueda]); // Se dispara cada vez que escribís en el buscador
+  }, [usuario, terminoBusqueda, filtroFechas]);
 
   const cerrarTodo = () => {
     setEnvioSeleccionado(null);
     setVista('listado');
+    setTerminoBusqueda('');
+  };
+
+  const manejarFiltroFechas = (desde, hasta) => {
+    setFiltroFechas({ desde, hasta });
     setTerminoBusqueda('');
   };
 
@@ -109,13 +118,14 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full pb-20">
         {vista === 'listado' && (
-          <ListaEnvios 
-            envios={envios} // Ahora pasamos 'envios' directamente porque el filtrado viene del backend
-            rol={usuario.rol} 
-            terminoBusqueda={terminoBusqueda} 
-            alCambiarBusqueda={setTerminoBusqueda} 
-            alSeleccionar={(e) => { setEnvioSeleccionado(e); setVista('detalle'); }} 
-            alIrNuevo={() => setVista('alta')} 
+          <ListaEnvios
+            envios={envios}
+            rol={usuario.rol}
+            terminoBusqueda={terminoBusqueda}
+            alCambiarBusqueda={setTerminoBusqueda}
+            alSeleccionar={(e) => { setEnvioSeleccionado(e); setVista('detalle'); }}
+            alIrNuevo={() => setVista('alta')}
+            alFiltrarFechas={manejarFiltroFechas}
           />
         )}
 
