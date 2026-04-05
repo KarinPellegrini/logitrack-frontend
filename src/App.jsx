@@ -10,6 +10,7 @@ import DetalleEnvio from './componentes/DetalleEnvio';
 import FormularioEnvio from './componentes/FormularioEnvio';
 import GestionUsuarios from './componentes/GestionUsuarios';
 import SolicitudesBorrado from './componentes/SolicitudesBorrado';
+import Dashboard from './componentes/Dashboard';
 import ModalARCO from './componentes/ModalARCO';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
@@ -132,6 +133,7 @@ export default function App() {
         alIrUsuarios={() => setVista('usuarios')}
         alIrSolicitudes={() => setVista('solicitudes-borrado')}
         cantidadSolicitudes={solicitudesBorrado.length}
+        alIrDashboard={() => setVista('dashboard')}
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full pb-20">
@@ -165,6 +167,10 @@ export default function App() {
 
         {vista === 'solicitudes-borrado' && usuario.rol === 'Supervisor' && (
           <SolicitudesBorrado solicitudes={solicitudesBorrado} alVolver={cerrarTodo} />
+        )}
+
+        {vista === 'dashboard' && usuario.rol === 'Supervisor' && (
+          <Dashboard alVolver={cerrarTodo} />
         )}
       </main>
 
