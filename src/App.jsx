@@ -135,6 +135,7 @@ export default function App() {
         alIrSolicitudes={() => setVista('solicitudes-borrado')}
         cantidadSolicitudes={solicitudesBorrado.length}
         alIrDashboard={() => setVista('dashboard')}
+        alIrLogs={() => setVista('logs')}
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full pb-20">

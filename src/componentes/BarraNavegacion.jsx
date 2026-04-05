@@ -1,7 +1,7 @@
 import React from 'react';
-import { Package, User, Shield, LogOut, Users, ShieldOff, BarChart2 } from 'lucide-react';
+import { Package, User, Shield, LogOut, Users, ShieldOff, BarChart2, ScrollText } from 'lucide-react';
 
-const BarraNavegacion = ({ usuario, alCerrarSesion, alIrInicio, alIrUsuarios, alIrSolicitudes, cantidadSolicitudes, alIrDashboard }) => (
+const BarraNavegacion = ({ usuario, alCerrarSesion, alIrInicio, alIrUsuarios, alIrSolicitudes, cantidadSolicitudes, alIrDashboard, alIrLogs }) => (
   <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
       <div className="flex items-center gap-2 cursor-pointer" onClick={alIrInicio}>
@@ -16,6 +16,12 @@ const BarraNavegacion = ({ usuario, alCerrarSesion, alIrInicio, alIrUsuarios, al
               className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-blue-50"
             >
               <BarChart2 size={14} /> Dashboard
+            </button>
+            <button
+              onClick={alIrLogs}
+              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-indigo-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-indigo-50"
+            >
+              <ScrollText size={14} /> Logs
             </button>
             <button
               onClick={alIrUsuarios}

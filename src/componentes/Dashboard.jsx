@@ -82,26 +82,34 @@ const Dashboard = ({ alVolver, alIrLogs }) => {
             ))}
           </div>
 
-          {/* Total general */}
-          <div className="bg-blue-600 text-white rounded-2xl p-5 flex items-center justify-between shadow-md">
-            <div>
-              <p className="text-blue-200 text-xs font-bold uppercase tracking-wider">Total de envíos en el sistema</p>
-              <p className="text-4xl font-black mt-1">{datos.totalEnvios ?? 0}</p>
+          {/* Total general + acceso rápido a logs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-blue-600 text-white rounded-2xl p-5 flex items-center justify-between shadow-md">
+              <div>
+                <p className="text-blue-200 text-xs font-bold uppercase tracking-wider">Total de envíos</p>
+                <p className="text-4xl font-black mt-1">{datos.totalEnvios ?? 0}</p>
+              </div>
+              <Package size={40} className="text-blue-400 opacity-50" />
             </div>
-            <Package size={48} className="text-blue-400 opacity-50" />
+            <button
+              onClick={alIrLogs}
+              className="bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-2xl p-5 flex items-center justify-between shadow-sm transition-all group text-left"
+            >
+              <div>
+                <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1">Auditoría completa</p>
+                <p className="text-lg font-black text-gray-800">Logs de actividad</p>
+                <p className="text-xs text-gray-400 mt-1">Buscá por usuario o tipo de acción</p>
+              </div>
+              <ExternalLink size={22} className="text-blue-400 group-hover:text-blue-600 transition-colors shrink-0" />
+            </button>
           </div>
 
           {/* Actividad reciente + Usuarios activos */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Actividad reciente */}
             <div className="md:col-span-2 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2 text-gray-500 font-bold uppercase text-[10px]">
-                  <Clock size={13} /> Actividad reciente
-                </div>
-                <button onClick={alIrLogs} className="flex items-center gap-1 text-[10px] font-bold text-blue-500 hover:text-blue-700 transition-colors">
-                  Ver todos los logs <ExternalLink size={10} />
-                </button>
+              <div className="flex items-center gap-2 text-gray-500 font-bold uppercase text-[10px] mb-4">
+                <Clock size={13} /> Últimos 10 movimientos
               </div>
               {datos.actividadReciente?.length === 0 ? (
                 <p className="text-gray-300 text-sm text-center py-6">Sin actividad registrada.</p>
