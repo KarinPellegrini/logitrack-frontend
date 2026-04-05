@@ -91,6 +91,34 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
             <p className="text-sm text-blue-800">{envio.motivoPrioridad}</p>
           </div>
         )}
+        {envio.probabilidadRetraso != null && (
+          <div className="pt-2 border-t border-blue-100">
+            <p className="text-[10px] text-blue-400 uppercase font-black tracking-widest mb-2">Probabilidad de retraso</p>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 bg-blue-100 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className={`h-2.5 rounded-full transition-all duration-500 ${
+                    envio.probabilidadRetraso >= 66 ? 'bg-red-500' :
+                    envio.probabilidadRetraso >= 33 ? 'bg-amber-400' : 'bg-emerald-500'
+                  }`}
+                  style={{ width: `${envio.probabilidadRetraso}%` }}
+                />
+              </div>
+              <span className={`text-sm font-black w-10 text-right ${
+                envio.probabilidadRetraso >= 66 ? 'text-red-600' :
+                envio.probabilidadRetraso >= 33 ? 'text-amber-500' : 'text-emerald-600'
+              }`}>
+                {envio.probabilidadRetraso}%
+              </span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                envio.probabilidadRetraso >= 66 ? 'bg-red-100 text-red-700' :
+                envio.probabilidadRetraso >= 33 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+              }`}>
+                {envio.probabilidadRetraso >= 66 ? 'ALTO' : envio.probabilidadRetraso >= 33 ? 'MODERADO' : 'BAJO'}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Historial de cambios de estado */}
