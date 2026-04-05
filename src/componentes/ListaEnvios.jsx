@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Search, PlusCircle, Eye, Calendar, X } from 'lucide-react';
+import { Search, PlusCircle, Eye, Calendar, X, Loader2 } from 'lucide-react';
 import Etiqueta from './elementos/Etiqueta';
 import SemaforoPrioridad from './elementos/SemaforoPrioridad';
 
-const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, alCambiarBusqueda, alFiltrarFechas }) => {
+const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, alCambiarBusqueda, alFiltrarFechas, cargando }) => {
   const [desde, setDesde] = useState('');
   const [hasta, setHasta] = useState('');
   const [errorFecha, setErrorFecha] = useState('');
@@ -38,9 +38,12 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text" placeholder="Buscar por nombre, apellido o Tracking ID..."
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-80 text-sm"
+              className="pl-10 pr-9 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-80 text-sm"
               value={terminoBusqueda} onChange={(e) => alCambiarBusqueda(e.target.value)}
             />
+            {cargando && (
+              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-400 w-4 h-4 animate-spin" />
+            )}
           </div>
           {(rol === 'Operador' || rol === 'Supervisor') && (
             <button onClick={alIrNuevo} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
@@ -88,7 +91,16 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
             </tr>
           </thead>
           <tbody className="divide-y">
-            {envios.length === 0 ? (
+            {cargando ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-12 text-center">
+                  <div className="flex items-center justify-center gap-2 text-blue-500">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="text-sm font-medium">Buscando...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : envios.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center text-sm text-gray-400 font-medium">
                   No se encontraron envíos.

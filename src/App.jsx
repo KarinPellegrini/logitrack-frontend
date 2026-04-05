@@ -27,6 +27,8 @@ export default function App() {
   const [envios, setEnvios] = useState([]);
   const [filtroFechas, setFiltroFechas] = useState({ desde: null, hasta: null });
   const [solicitudesBorrado, setSolicitudesBorrado] = useState([]);
+  const [terminoBusquedaDebounced, setTerminoBusquedaDebounced] = useState('');
+  const [cargandoBusqueda, setCargandoBusqueda] = useState(false);
 
   // --- 1. NOTIFICACIÓN ---
   const mostrarNotificacion = (msj) => {
@@ -68,15 +70,25 @@ export default function App() {
     }
   };
 
-  // --- 3. SINCRONIZACIÓN CON BACKEND ---
+  // --- 3a. DEBOUNCE de búsqueda (500 ms) ---
+  useEffect(() => {
+    setCargandoBusqueda(true);
+    const timer = setTimeout(() => {
+      setTerminoBusquedaDebounced(terminoBusqueda);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [terminoBusqueda]);
+
+  // --- 3b. SINCRONIZACIÓN CON BACKEND ---
   useEffect(() => {
     const ejecutarCarga = async () => {
+      setCargandoBusqueda(true);
       try {
         let url;
         if (filtroFechas.desde && filtroFechas.hasta) {
           url = `${API_URL}/por-fecha?desde=${filtroFechas.desde}&hasta=${filtroFechas.hasta}`;
-        } else if (terminoBusqueda.trim()) {
-          url = `${API_URL}/buscar?nombre=${terminoBusqueda}`;
+        } else if (terminoBusquedaDebounced.trim()) {
+          url = `${API_URL}/buscar?nombre=${terminoBusquedaDebounced}`;
         } else {
           url = API_URL;
         }
@@ -85,13 +97,15 @@ export default function App() {
       } catch (error) {
         mostrarNotificacion("Error de conexión con el servidor");
         console.error("Fetch Error:", error);
+      } finally {
+        setCargandoBusqueda(false);
       }
     };
 
     if (usuario) {
       ejecutarCarga();
     }
-  }, [usuario, terminoBusqueda, filtroFechas]);
+  }, [usuario, terminoBusquedaDebounced, filtroFechas]);
 
   useEffect(() => {
     if (usuario?.rol === 'Supervisor') {
@@ -148,6 +162,7 @@ export default function App() {
             alSeleccionar={(e) => { setEnvioSeleccionado(e); setVista('detalle'); }}
             alIrNuevo={() => setVista('alta')}
             alFiltrarFechas={manejarFiltroFechas}
+            cargando={cargandoBusqueda}
           />
         )}
 
