@@ -11,6 +11,7 @@ import FormularioEnvio from './componentes/FormularioEnvio';
 import GestionUsuarios from './componentes/GestionUsuarios';
 import SolicitudesBorrado from './componentes/SolicitudesBorrado';
 import Dashboard from './componentes/Dashboard';
+import LogsAuditoria from './componentes/LogsAuditoria';
 import ModalARCO from './componentes/ModalARCO';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
@@ -170,7 +171,11 @@ export default function App() {
         )}
 
         {vista === 'dashboard' && usuario.rol === 'Supervisor' && (
-          <Dashboard alVolver={cerrarTodo} />
+          <Dashboard alVolver={cerrarTodo} alIrLogs={() => setVista('logs')} />
+        )}
+
+        {vista === 'logs' && usuario.rol === 'Supervisor' && (
+          <LogsAuditoria alVolver={() => setVista('dashboard')} />
         )}
       </main>
 

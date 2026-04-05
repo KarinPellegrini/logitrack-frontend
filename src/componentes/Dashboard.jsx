@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, RefreshCw, Package, Truck, MapPin, CheckCircle, Clock, Users } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Package, Truck, MapPin, CheckCircle, Clock, Users, ExternalLink } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/dashboard`;
@@ -18,7 +18,7 @@ const ETIQUETA_ESTADO = {
   ENTREGADO:   'bg-emerald-100 text-emerald-700',
 };
 
-const Dashboard = ({ alVolver }) => {
+const Dashboard = ({ alVolver, alIrLogs }) => {
   const [datos, setDatos] = useState(null);
   const [cargando, setCargando] = useState(false);
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
@@ -95,8 +95,13 @@ const Dashboard = ({ alVolver }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Actividad reciente */}
             <div className="md:col-span-2 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-gray-500 font-bold uppercase text-[10px] mb-4">
-                <Clock size={13} /> Actividad reciente
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-gray-500 font-bold uppercase text-[10px]">
+                  <Clock size={13} /> Actividad reciente
+                </div>
+                <button onClick={alIrLogs} className="flex items-center gap-1 text-[10px] font-bold text-blue-500 hover:text-blue-700 transition-colors">
+                  Ver todos los logs <ExternalLink size={10} />
+                </button>
               </div>
               {datos.actividadReciente?.length === 0 ? (
                 <p className="text-gray-300 text-sm text-center py-6">Sin actividad registrada.</p>
