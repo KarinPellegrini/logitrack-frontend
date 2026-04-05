@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Package, User, Lock, LogIn, AlertCircle, ShieldAlert } from 'lucide-react';
 
 // Usuarios de prueba para el prototipo
@@ -10,26 +10,51 @@ const USUARIOS_MOCK = [
 const TIEMPO_BLOQUEO_MS = 30000; // 30 segundos
 const MAX_INTENTOS = 3;
 
-// CA-01: el usuario solo puede tener letras, números, puntos y guiones bajos (sin espacios ni caracteres raros)
 const formatoUsuarioValido = (usuario) => /^[a-zA-Z0-9._]{3,20}$/.test(usuario);
+
+// Contador regresivo: maneja su propio tick y muestra los segundos
+const Contador = ({ hasta, onVencido }) => {
+  const [segundos, setSegundos] = useState(Math.ceil((hasta - Date.now()) / 1000));
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      const restantes = Math.ceil((hasta - Date.now()) / 1000);
+      if (restantes <= 0) {
+        clearInterval(intervalo);
+        onVencido();
+      } else {
+        setSegundos(restantes);
+      }
+    }, 1000);
+    return () => clearInterval(intervalo);
+  }, [hasta]);
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <span className="text-5xl font-black text-red-600 tabular-nums">{segundos}</span>
+      <span className="text-xs text-gray-400 uppercase font-bold tracking-widest">segundos</span>
+    </div>
+  );
+};
 
 const Acceso = ({ alIngresar }) => {
   const [datos, setDatos] = useState({ usuario: '', clave: '' });
   const [error, setError] = useState('');
   const [errorFormato, setErrorFormato] = useState('');
-  const [intentosFallidos, setIntentosFallidos] = useState(0);
-  const [bloqueadoHasta, setBloqueadoHasta] = useState(null);
+
+  const [intentosFallidos, setIntentosFallidos] = useState(
+    () => parseInt(localStorage.getItem('lt_intentos') || '0')
+  );
+  const [bloqueadoHasta, setBloqueadoHasta] = useState(
+    () => parseInt(localStorage.getItem('lt_bloqueado') || '0') || null
+  );
 
   const estaBloqueado = bloqueadoHasta && Date.now() < bloqueadoHasta;
-  const segundosRestantes = estaBloqueado
-    ? Math.ceil((bloqueadoHasta - Date.now()) / 1000)
-    : 0;
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setDatos({ ...datos, [name]: value });
 
-    // CA-01: validar formato del usuario en tiempo real
     if (name === 'usuario') {
       if (value && !formatoUsuarioValido(value)) {
         setErrorFormato('Solo letras, números, puntos o guiones bajos (3-20 caracteres).');
@@ -43,10 +68,8 @@ const Acceso = ({ alIngresar }) => {
     e.preventDefault();
     setError('');
 
-    // Bloqueo activo
     if (estaBloqueado) return;
 
-    // CA-01: no dejar avanzar si el formato es inválido
     if (!formatoUsuarioValido(datos.usuario)) {
       setErrorFormato('Formato de usuario inválido.');
       return;
@@ -59,20 +82,29 @@ const Acceso = ({ alIngresar }) => {
     if (usuarioEncontrado) {
       setIntentosFallidos(0);
       setBloqueadoHasta(null);
+      localStorage.removeItem('lt_intentos');
+      localStorage.removeItem('lt_bloqueado');
       alIngresar(usuarioEncontrado);
     } else {
       const nuevosIntentos = intentosFallidos + 1;
       setIntentosFallidos(nuevosIntentos);
+      localStorage.setItem('lt_intentos', nuevosIntentos);
 
-      // CA-04: bloquear tras MAX_INTENTOS
       if (nuevosIntentos >= MAX_INTENTOS) {
-        setBloqueadoHasta(Date.now() + TIEMPO_BLOQUEO_MS);
-        setError(`Demasiados intentos fallidos. Esperá 30 segundos.`);
+        const nuevoBloqueadoHasta = Date.now() + TIEMPO_BLOQUEO_MS;
+        setBloqueadoHasta(nuevoBloqueadoHasta);
+        localStorage.setItem('lt_bloqueado', nuevoBloqueadoHasta);
       } else {
-        // CA-03: mensaje genérico, no indica cuál campo falló
         setError(`Credenciales incorrectas. Intentos restantes: ${MAX_INTENTOS - nuevosIntentos}`);
       }
     }
+  };
+
+  const desbloquear = () => {
+    setBloqueadoHasta(null);
+    setIntentosFallidos(0);
+    localStorage.removeItem('lt_bloqueado');
+    localStorage.removeItem('lt_intentos');
   };
 
   return (
@@ -89,18 +121,14 @@ const Acceso = ({ alIngresar }) => {
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
           <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">Ingreso al Sistema</h2>
 
-          {/* Pantalla de bloqueo */}
           {estaBloqueado ? (
-            <div className="flex flex-col items-center gap-4 py-6 text-center">
+            <div className="flex flex-col items-center gap-5 py-6 text-center">
               <div className="bg-red-100 text-red-600 p-4 rounded-2xl">
                 <ShieldAlert size={32} />
               </div>
               <p className="font-bold text-gray-800">Acceso bloqueado temporalmente</p>
-              <p className="text-sm text-gray-500">
-                Podés intentar de nuevo en <span className="font-black text-red-600">{segundosRestantes}s</span>
-              </p>
-              {/* Forzar re-render para actualizar la cuenta regresiva */}
-              <Contador hasta={bloqueadoHasta} />
+              <Contador hasta={bloqueadoHasta} onVencido={desbloquear} />
+              <p className="text-xs text-gray-400">Demasiados intentos fallidos. Esperá para volver a intentar.</p>
             </div>
           ) : (
             <form onSubmit={manejarLogin} className="space-y-4">
@@ -152,21 +180,6 @@ const Acceso = ({ alIngresar }) => {
       </div>
     </div>
   );
-};
-
-// Componente auxiliar que se re-renderiza cada segundo para actualizar la cuenta regresiva
-const Contador = ({ hasta }) => {
-  const [, setTick] = useState(0);
-
-  React.useEffect(() => {
-    const intervalo = setInterval(() => {
-      setTick(t => t + 1);
-      if (Date.now() >= hasta) clearInterval(intervalo);
-    }, 1000);
-    return () => clearInterval(intervalo);
-  }, [hasta]);
-
-  return null;
 };
 
 export default Acceso;
