@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, PlusCircle, Eye, AlertTriangle, Calendar, X } from 'lucide-react';
+import { Search, PlusCircle, Eye, Calendar, X } from 'lucide-react';
 import Etiqueta from './elementos/Etiqueta';
+import SemaforoPrioridad from './elementos/SemaforoPrioridad';
 
 const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, alCambiarBusqueda, alFiltrarFechas }) => {
   const [desde, setDesde] = useState('');
@@ -104,20 +105,7 @@ const ListaEnvios = ({ envios, alSeleccionar, alIrNuevo, rol, terminoBusqueda, a
                     <Etiqueta>{envio.estado}</Etiqueta>
                   </td>
                   <td className="px-6 py-4">
-                    {envio.prioridad ? (
-                      <span className={`flex items-center gap-1.5 text-[10px] font-black px-2 py-1 rounded-md border ${
-                        envio.prioridad === 'ALTA'
-                          ? 'bg-red-50 text-red-700 border-red-100'
-                          : envio.prioridad === 'MEDIA'
-                          ? 'bg-amber-50 text-amber-700 border-amber-100'
-                          : 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                      }`}>
-                        {envio.prioridad === 'ALTA' && <AlertTriangle size={10} />}
-                        {envio.prioridad}
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-bold text-gray-300 italic">PENDIENTE</span>
-                    )}
+                    <SemaforoPrioridad prioridad={envio.prioridad} />
                   </td>
                   <td className="px-6 py-4">
                     <button onClick={() => alSeleccionar(envio)} className="text-gray-400 hover:text-blue-600">
