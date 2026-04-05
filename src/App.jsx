@@ -8,6 +8,7 @@ import BarraNavegacion from './componentes/BarraNavegacion';
 import ListaEnvios from './componentes/ListaEnvios';
 import DetalleEnvio from './componentes/DetalleEnvio';
 import FormularioEnvio from './componentes/FormularioEnvio';
+import GestionUsuarios from './componentes/GestionUsuarios';
 import ModalARCO from './componentes/ModalARCO';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/envios`;
@@ -114,7 +115,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
-      <BarraNavegacion usuario={usuario} alCerrarSesion={cerrarSesion} alIrInicio={cerrarTodo} />
+      <BarraNavegacion usuario={usuario} alCerrarSesion={cerrarSesion} alIrInicio={cerrarTodo} alIrUsuarios={() => setVista('usuarios')} />
 
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full pb-20">
         {vista === 'listado' && (
@@ -135,6 +136,14 @@ export default function App() {
 
         {vista === 'detalle' && envioSeleccionado && (
           <DetalleEnvio envio={envioSeleccionado} alVolver={cerrarTodo} rol={usuario.rol} alCambiarEstado={cambiarEstado} />
+        )}
+
+        {vista === 'usuarios' && usuario.rol === 'Supervisor' && (
+          <GestionUsuarios
+            usuarioActual={usuario}
+            alVolver={cerrarTodo}
+            alActualizarRol={(usuarioActualizado) => setUsuario(usuarioActualizado)}
+          />
         )}
       </main>
 
