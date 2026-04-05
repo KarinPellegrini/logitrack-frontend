@@ -59,6 +59,13 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
         <Campo label="Distancia estimada" value={envio.distanciaKm != null ? `${envio.distanciaKm} km` : null} />
       </div>
 
+      {/* Fecha de creación */}
+      {envio.fechaCreacion && (
+        <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-[11px] text-gray-500">
+          Creado el <span className="font-bold text-gray-700">{new Date(envio.fechaCreacion).toLocaleString('es-AR')}</span>
+        </div>
+      )}
+
       {/* Auditoría de estado */}
       {envio.fechaCambioEstado && (
         <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-[11px] text-gray-500">
