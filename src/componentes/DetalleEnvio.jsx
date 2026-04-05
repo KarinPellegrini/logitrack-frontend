@@ -29,6 +29,11 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
         <div>
           <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-1">Identificador</p>
           <h3 className="text-3xl font-mono font-black text-blue-600">{envio.trackingId}</h3>
+          {envio.fechaCreacion && (
+            <p className="text-[11px] text-gray-400 mt-1">
+              Creado el <span className="font-semibold text-gray-600">{new Date(envio.fechaCreacion).toLocaleString('es-AR')}</span>
+            </p>
+          )}
         </div>
         <Etiqueta>{envio.estado}</Etiqueta>
       </div>
@@ -58,13 +63,6 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
         <Campo label="Prioridad" value={envio.prioridad} />
         <Campo label="Distancia estimada" value={envio.distanciaKm != null ? `${envio.distanciaKm} km` : null} />
       </div>
-
-      {/* Fecha de creación */}
-      {envio.fechaCreacion && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-[11px] text-gray-500">
-          Creado el <span className="font-bold text-gray-700">{new Date(envio.fechaCreacion).toLocaleString('es-AR')}</span>
-        </div>
-      )}
 
       {/* Auditoría de estado */}
       {envio.fechaCambioEstado && (
