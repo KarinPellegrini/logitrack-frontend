@@ -58,10 +58,18 @@ const DetalleEnvio = ({ envio, alVolver, rol, alCambiarEstado }) => {
       </div>
 
       {/* Resultado de la IA */}
-      <div className="mt-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 grid grid-cols-2 gap-4">
-        <div className="flex items-center gap-2 col-span-2 text-blue-600 font-bold uppercase text-[10px]"><Brain size={14} /> Análisis IA</div>
-        <Campo label="Prioridad" value={envio.prioridad} />
-        <Campo label="Distancia estimada" value={envio.distanciaKm != null ? `${envio.distanciaKm} km` : null} />
+      <div className="mt-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 space-y-3">
+        <div className="flex items-center gap-2 text-blue-600 font-bold uppercase text-[10px]"><Brain size={14} /> Análisis IA</div>
+        <div className="grid grid-cols-2 gap-4">
+          <Campo label="Prioridad" value={envio.prioridad} />
+          <Campo label="Distancia estimada" value={envio.distanciaKm != null ? `${envio.distanciaKm} km` : null} />
+        </div>
+        {envio.motivoPrioridad && (
+          <div className="pt-2 border-t border-blue-100">
+            <p className="text-[10px] text-blue-400 uppercase font-black tracking-widest mb-1">Motivo</p>
+            <p className="text-sm text-blue-800">{envio.motivoPrioridad}</p>
+          </div>
+        )}
       </div>
 
       {/* Auditoría de estado */}
