@@ -20,7 +20,7 @@ jobs:
     - name: Configurar Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20' # Versión estable recomendada para Vite/React
+        node-version: '22' # Vite 8 requiere Node ^20.19.0 || >=22.12.0
 
     # 3. Instala las dependencias (el equivalente a tu npm install)
     - name: Instalar dependencias
