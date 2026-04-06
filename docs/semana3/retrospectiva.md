@@ -1,4 +1,4 @@
-# Sprint 3 — Retrospectiva
+# Sprint Retrospectiva
 
 **Fecha:** abril 2026
 **Formato:** Start / Stop / Continue
@@ -25,26 +25,5 @@
 
 ## 🚀 Start — Lo que hay que empezar a hacer
 
-- **Tests unitarios para `EnvioService`**: el sprint avanzó rápido pero sin cobertura de tests en los métodos más críticos (`mapToResponse`, `calcularProbabilidadRetraso`).
 - **Actualizar la matriz de trazabilidad a medida que se cierran US**: es más costoso completarla al final que mantenerla incremental.
 - **Revisar el Dockerfile de la IA antes de cada deploy**: el error de archivos faltantes en la imagen Docker es fácilmente evitable con un checklist de 30 segundos.
-
----
-
-## Métricas del Sprint
-
-| Métrica | Valor |
-|---|---|
-| Story Points comprometidos | 33 |
-| Story Points completados | 33 |
-| Bugs encontrados en review | 5 |
-| Bugs resueltos antes del cierre | 5 |
-| Velocidad | 33 pts/sprint |
-
----
-
-## Acuerdos para el próximo Sprint
-
-1. Todo endpoint nuevo devuelve DTO desde el primer commit.
-2. Antes de hacer push al Dockerfile, verificar que todos los archivos importados estén en el `COPY`.
-3. Escribir al menos un test unitario por método de servicio nuevo.
