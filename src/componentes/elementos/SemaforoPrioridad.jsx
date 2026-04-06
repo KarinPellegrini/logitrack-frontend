@@ -8,7 +8,7 @@ const CONFIG = {
 
 const SemaforoPrioridad = ({ prioridad, size = 'sm' }) => {
   const c = CONFIG[prioridad];
-  if (!c) return <span className="text-[10px] text-gray-300 italic">—</span>;
+  if (!c) return <span className="text-[10px] text-gray-300 italic font-semibold">PENDIENTE</span>;
 
   if (size === 'lg') {
     return (
