@@ -1,6 +1,6 @@
 # Sprint Retrospectiva
 
-**Fecha:** abril 2026
+**Fecha:** 6 de abril 2026
 **Formato:** Start / Stop / Continue
 
 ---
